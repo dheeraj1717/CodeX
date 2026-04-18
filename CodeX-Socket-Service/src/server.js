@@ -1,7 +1,9 @@
 const express = require("express");
-const { createServer} = require("http");
+const { createServer } = require("http");
 const { default: Redis } = require("ioredis");
 const { Server } = require("socket.io");
+
+try { process.loadEnvFile(); } catch (e) {}
 
 const app = express();
 const httpServer = createServer(app);
@@ -9,19 +11,16 @@ app.use(express.json());
 
 const redisCache = new Redis({
     host: process.env.REDIS_HOST || "localhost",
-    port: process.env.REDIS_PORT || 6379,
+    port: parseInt(process.env.REDIS_PORT || "6379"),
     password: process.env.REDIS_PASSWORD || undefined
 });
-try {
-    process.loadEnvFile();
-} catch (e) {}
 
 const io = new Server(httpServer, {
     cors: {
         origin: "*",
         methods: ["GET", "POST"],
-        credentials: true
-    }
+    },
+    allowEIO3: true
 });
 
 io.on("connection", (socket) => {
