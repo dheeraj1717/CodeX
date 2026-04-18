@@ -55,6 +55,6 @@ app.post('/sendPayload', async (req, res)=>{
     res.send("Payload sent successfully");
 })
 
-httpServer.listen(4005, () => {
+httpServer.listen(4005, '0.0.0.0', () => {
     console.log("listening on :4005");
 });

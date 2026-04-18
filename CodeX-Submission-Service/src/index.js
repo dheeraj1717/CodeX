@@ -11,7 +11,7 @@ fastify.register(app);
 
 async function startServer() {
     try {
-        await fastify.listen({ port: PORT });
+        await fastify.listen({ port: PORT, host: '0.0.0.0' });
         await connectDB();
         evaluationWorker(EVALUATION_QUEUE);
         logger.info(`Server listening on ${PORT}`);
