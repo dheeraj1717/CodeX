@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  problem-service:
+    build:
+      context: ./CodeX-Problem-Service
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - ATLAS_DB_URI=${ATLAS_DB_URI}
+      - LOG_DB_URI=${LOG_DB_URI}
+      - NODE_ENV=production
+    restart: always
+
+  submission-service:
+    build:
+      context: ./CodeX-Submission-Service
+    ports:
+      - "4002:4002"
+    environment:
+      - PORT=4002
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - ATLAS_URI=${ATLAS_URI}
+      - LOG_DB_URI=${LOG_DB_URI}
+      - NODE_ENV=production
+    restart: always
+
+  socket-service:
+    build:
+      context: ./CodeX-Socket-Service
+    ports:
+      - "4005:4005"
+    environment:
+      - PORT=4005
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    restart: always
+
+  evaluator-service:
+    build:
+      context: ./CodeX-Evaluator-Service
+    ports:
+      - "4001:4001"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - PORT=4001
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - LOG_DB_URI=${LOG_DB_URI}
+      - NODE_ENV=production
+    restart: always
