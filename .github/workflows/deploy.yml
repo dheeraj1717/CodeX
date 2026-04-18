@@ -6,7 +6,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  # We will use lowercase repo name for image tagging
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
@@ -17,8 +16,8 @@ jobs:
       packages: write
 
     strategy:
+      fail-fast: false
       matrix:
-        service: [problem-service, submission-service, socket-service, evaluator-service]
         include:
           - service: problem-service
             context: ./CodeX-Problem-Service
@@ -41,7 +40,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ${{ matrix.context }}
           push: true
@@ -52,13 +51,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to EC2 via SSH
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            # Ensure the directory exists
+            mkdir -p ~/CodeX
             cd ~/CodeX
-            git pull origin main
+            # If the repo isn't there, clone it (first time setup)
+            if [ ! -d ".git" ]; then
+              git clone https://github.com/${{ github.repository }}.git .
+            else
+              git pull origin master
+            fi
+            # Login to registry on EC2
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            # Pull and restart
             docker compose pull
             docker compose up -d --remove-orphans
