@@ -12,12 +12,16 @@ const redisCache = new Redis({
     port: process.env.REDIS_PORT || 6379,
     password: process.env.REDIS_PASSWORD || undefined
 });
+try {
+    process.loadEnvFile();
+} catch (e) {}
+
 const io = new Server(httpServer, {
-cors: {
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST"],
-    credentials: true
-}
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"],
+        credentials: true
+    }
 });
 
 io.on("connection", (socket) => {
