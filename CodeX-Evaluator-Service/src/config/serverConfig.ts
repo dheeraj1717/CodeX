@@ -1,4 +1,8 @@
-process.loadEnvFile();
+try {
+    process.loadEnvFile();
+} catch (e) {
+    // Environment variables provided by container
+}
 
 export const PORT = process.env.PORT || 4001;
 export const REDIS_PORT = parseInt(process.env.REDIS_PORT || "6379", 10);

@@ -1,4 +1,8 @@
-process.loadEnvFile();
+try {
+    process.loadEnvFile();
+} catch (e) {
+    // In production, environment variables are provided by Docker/Cloud
+}
 
 module.exports = {
     PORT: process.env.PORT || 3000,
