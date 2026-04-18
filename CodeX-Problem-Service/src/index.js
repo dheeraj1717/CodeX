@@ -6,7 +6,6 @@ const BaseError = require("./errors/BaseError");
 const errorHandler = require("./utils/errorHandler");
 const connectDB = require("./config/db.config");
 const app = express();
-app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.text());

@@ -23,10 +23,6 @@ redisCache.on("error", (err) => {
 });
 
 const io = new Server(httpServer, {
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"],
-    },
     allowEIO3: true
 });
 
