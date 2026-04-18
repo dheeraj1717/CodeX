@@ -5,8 +5,9 @@ async function app(fastify, options) {
     fastify.register(require("@fastify/cors"), {
         origin: "*",
         methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],
-        allowedHeaders: ["Content-Type", "Authorization", "set-cookie"],
-        credentials: true
+        allowedHeaders: ["Content-Type", "Authorization"],
+        preflight: true,
+        strictPreflight: false
     });
 
     // register test route
