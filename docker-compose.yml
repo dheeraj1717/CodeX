@@ -2,8 +2,7 @@ version: '3.8'
 
 services:
   problem-service:
-    build:
-      context: ./CodeX-Problem-Service
+    image: ghcr.io/dheeraj1717/codex-problem-service:latest
     ports:
       - "3000:3000"
     environment:
@@ -14,8 +13,7 @@ services:
     restart: always
 
   submission-service:
-    build:
-      context: ./CodeX-Submission-Service
+    image: ghcr.io/dheeraj1717/codex-submission-service:latest
     ports:
       - "4002:4002"
     environment:
@@ -29,8 +27,7 @@ services:
     restart: always
 
   socket-service:
-    build:
-      context: ./CodeX-Socket-Service
+    image: ghcr.io/dheeraj1717/codex-socket-service:latest
     ports:
       - "4005:4005"
     environment:
@@ -41,8 +38,7 @@ services:
     restart: always
 
   evaluator-service:
-    build:
-      context: ./CodeX-Evaluator-Service
+    image: ghcr.io/dheeraj1717/codex-evaluator-service:latest
     ports:
       - "4001:4001"
     volumes:

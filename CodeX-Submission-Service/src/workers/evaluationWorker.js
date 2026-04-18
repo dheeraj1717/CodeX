@@ -33,7 +33,7 @@ function evaluationWorker(queueName){
                 logger.debug(`Submission ${job.data.submissionId} updated successfully: ${finalStatus}`);
 
                 // Notify frontend via socket service
-                const response = await axios.post("http://localhost:4005/sendPayload", {
+                const response = await axios.post("http://socket-service:4005/sendPayload", {
                     userId: job.data.userId,
                     payload: {
                         ...job.data,
