@@ -14,6 +14,7 @@ module.exports = {
     PORT,
     REDIS_PORT,
     REDIS_HOST,
+    REDIS_PASSWORD: process.env.REDIS_PASSWORD || "",
     LOG_DB_URI,
     NODE_ENV,
     ATLAS_URI,
