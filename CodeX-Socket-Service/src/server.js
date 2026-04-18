@@ -12,7 +12,14 @@ app.use(express.json());
 const redisCache = new Redis({
     host: process.env.REDIS_HOST || "localhost",
     port: parseInt(process.env.REDIS_PORT || "6379"),
-    password: process.env.REDIS_PASSWORD || undefined
+    password: process.env.REDIS_PASSWORD || undefined,
+    tls: process.env.REDIS_PASSWORD ? {} : undefined,
+    maxRetriesPerRequest: null,
+    enableReadyCheck: false,
+});
+
+redisCache.on("error", (err) => {
+    console.error("[Redis] Connection error:", err.message);
 });
 
 const io = new Server(httpServer, {
