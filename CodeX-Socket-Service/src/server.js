@@ -23,6 +23,10 @@ redisCache.on("error", (err) => {
 });
 
 const io = new Server(httpServer, {
+    cors: {
+        origin: "https://code-x-hazel.vercel.app",
+        methods: ["GET", "POST"]
+    },
     allowEIO3: true
 });
 
