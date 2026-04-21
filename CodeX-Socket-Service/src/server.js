@@ -14,8 +14,13 @@ const redisCache = new Redis({
     port: parseInt(process.env.REDIS_PORT || "6379"),
     password: process.env.REDIS_PASSWORD || undefined,
     tls: process.env.REDIS_PASSWORD ? {} : undefined,
-    maxRetriesPerRequest: null,
+    maxRetriesPerRequest: 20, // Not a BullMQ worker, so we can set a limit
     enableReadyCheck: false,
+    keepAlive: 10000,
+    retryStrategy(times) {
+        const delay = Math.min(times * 1000, 30000);
+        return delay;
+    }
 });
 
 redisCache.on("error", (err) => {

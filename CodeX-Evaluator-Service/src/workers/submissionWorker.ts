@@ -10,6 +10,9 @@ export default function SubmissionWorker(queueName: string) {
     }
     return true;
   },{
-    connection: redisConnection
+    connection: redisConnection,
+    stalledInterval: 43200000,
+    lockDuration: 600000,
+    drainDelay: 60
   });
 }

@@ -8,6 +8,11 @@ const redisConfig = {
     tls: REDIS_PASSWORD ? {} : undefined,
     maxRetriesPerRequest: null,
     enableReadyCheck: false,
+    keepAlive: 10000,
+    retryStrategy(times: number) {
+        const delay = Math.min(times * 1000, 30000);
+        return delay;
+    }
 }
 
 const redisConnection = new Redis(redisConfig);
