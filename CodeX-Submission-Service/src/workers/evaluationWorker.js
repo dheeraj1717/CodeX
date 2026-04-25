@@ -48,8 +48,9 @@ function evaluationWorker(queueName){
     },{
         connection: redisConnection,
         stalledInterval: 43200000, // 12 hours
-        lockDuration: 600000,      // 10 minutes (plenty for code execution)
-        drainDelay: 60,            // Poll once per minute when idle
+        lockDuration: 600000,      // 10 minutes
+        drainDelay: 3600,          // Poll once per hour when idle
+        stalledCheckInterval: 86400000, // Check for stalled jobs once per 24 hours
         skipFillWatcher: true
     });
     return worker;

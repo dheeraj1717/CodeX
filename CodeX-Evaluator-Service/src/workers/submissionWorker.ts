@@ -13,7 +13,8 @@ export default function SubmissionWorker(queueName: string) {
     connection: redisConnection,
     stalledInterval: 43200000,
     lockDuration: 600000,
-    drainDelay: 60,
+    drainDelay: 3600,
+    stalledCheckInterval: 86400000,
     skipFillWatcher: true
   } as any);
 }
