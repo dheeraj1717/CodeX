@@ -11,7 +11,7 @@ class PythonExecutor implements CodeExecutorStrategy {
     console.log("Initialising a new python docker container");
     const runCommand = `echo '${code.replace(/'/g, `'\\"`)}' > test.py && echo '${inputTestCase.replace(/'/g, `'\\"`)}' | python3 test.py`;
     console.log(runCommand);
-    // const pythonDockerContainer = await createContainer(PYTHON_IMAGE, ['python3', '-c', code, 'stty -echo']);
+
     const pythonDockerContainer = await createContainer(PYTHON_IMAGE, [
       "/bin/sh",
       "-c",
@@ -23,17 +23,28 @@ class PythonExecutor implements CodeExecutorStrategy {
       stdout: true,
       stderr: true,
       timestamps: false,
-      follow: true, // whether the logs are streammed or returned as a string
+      follow: true,
     });
 
-    // attach events on the stream objects to start and stop reading
     loggerStream.on("data", (chunk) => rawLogBuffer.push(chunk));
 
     try {
       const codeResponse: string = await fetchDecodedStream(loggerStream, rawLogBuffer);
-      return {output: codeResponse, status: "SUCCESS"};
+      if (codeResponse.trim() === outputTestCase.trim()) {
+        return { output: codeResponse, status: "SUCCESS" };
+      } else {
+        return { output: codeResponse, status: "WA" };
+      }
     } catch (error) {
-      return {output: error as string, status: "ERROR"};
+      if (error === "TLE") {
+        try {
+          await pythonDockerContainer.kill();
+        } catch (e) {
+          // Container might already be stopped
+        }
+        return { output: error as string, status: "TLE" };
+      }
+      return { output: error as string, status: "ERROR" };
     } finally {
       try {
         await pythonDockerContainer.remove();

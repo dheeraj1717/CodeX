@@ -28,10 +28,9 @@ class CppExecutor implements CodeExecutorStrategy {
       stdout: true,
       stderr: true,
       timestamps: false,
-      follow: true, // whether the logs are streammed or returned as a string
+      follow: true,
     });
 
-    // attach events on the stream objects to start and stop reading
     loggerStream.on("data", (chunk) => rawLogBuffer.push(chunk));
 
     try {
@@ -39,8 +38,20 @@ class CppExecutor implements CodeExecutorStrategy {
         loggerStream,
         rawLogBuffer
       );
-      return { output: codeResponse, status: "SUCCESS" };
+      if (codeResponse.trim() === outputTestCase.trim()) {
+        return { output: codeResponse, status: "SUCCESS" };
+      } else {
+        return { output: codeResponse, status: "WA" };
+      }
     } catch (error) {
+      if (error === "TLE") {
+        try {
+          await cppDockerContainer.kill();
+        } catch (e) {
+          // Container might already be stopped
+        }
+        return { output: error as string, status: "TLE" };
+      }
       return { output: error as string, status: "ERROR" };
     } finally {
       try {
