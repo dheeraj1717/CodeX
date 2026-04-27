@@ -1,6 +1,12 @@
 import Docker from 'dockerode';
 
+const pulledImages = new Set<string>();
+
 export default async function pullImage(imageName: string): Promise<void> {
+    if (pulledImages.has(imageName)) {
+        console.log(`Image already pulled, skipping: ${imageName}`);
+        return;
+    }
     try {
         const docker = new Docker();
         return new Promise((resolve, reject) => {
@@ -15,6 +21,7 @@ export default async function pullImage(imageName: string): Promise<void> {
                         return reject(err);
                     }
                     console.log(`Successfully pulled image: ${imageName}`);
+                    pulledImages.add(imageName);
                     resolve();
                 });
             });
@@ -22,4 +29,10 @@ export default async function pullImage(imageName: string): Promise<void> {
     } catch (error) {
         console.log(error);
     }
+}
+
+export async function prewarmImages(images: string[]): Promise<void> {
+    console.log('Pre-warming Docker images...');
+    await Promise.all(images.map(pullImage));
+    console.log('All images ready.');
 }

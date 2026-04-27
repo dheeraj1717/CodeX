@@ -43,7 +43,11 @@ class CppExecutor implements CodeExecutorStrategy {
     } catch (error) {
       return { output: error as string, status: "ERROR" };
     } finally {
-      await cppDockerContainer.remove();
+      try {
+        await cppDockerContainer.remove();
+      } catch (e) {
+        // Container might already be removed
+      }
     }
   }
 }

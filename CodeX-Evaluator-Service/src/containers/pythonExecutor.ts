@@ -35,7 +35,11 @@ class PythonExecutor implements CodeExecutorStrategy {
     } catch (error) {
       return {output: error as string, status: "ERROR"};
     } finally {
-      await pythonDockerContainer.remove();
+      try {
+        await pythonDockerContainer.remove();
+      } catch (e) {
+        // Container might already be removed
+      }
     }
   }
 }

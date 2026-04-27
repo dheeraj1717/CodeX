@@ -37,14 +37,21 @@ class JavaExecutor implements CodeExecutorStrategy {
         return {output: codeResponse, status: "WA"};
       }
     } catch (error) {
-      if(error === "TLE"){
-        await javaDockerContainer.kill();
-        console.log("Container stopped", error);
-        return {output: error as string, status: "TLE"};
+      if (error === "TLE") {
+        try {
+          await javaDockerContainer.kill();
+        } catch (e) {
+          // Container might already be stopped
+        }
+        return { output: error as string, status: "TLE" };
       }
-      return {output: error as string, status: "ERROR"};
+      return { output: error as string, status: "ERROR" };
     } finally {
-      await javaDockerContainer.remove();
+      try {
+        await javaDockerContainer.remove();
+      } catch (e) {
+        // Container might already be removed
+      }
     }
   }
 }
