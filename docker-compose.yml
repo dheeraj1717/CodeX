@@ -7,8 +7,8 @@ services:
       - "3000:3000"
     environment:
       - PORT=3000
-      - ATLAS_DB_URI=${ATLAS_DB_URI}
-      - LOG_DB_URI=${LOG_DB_URI}
+      - ATLAS_DB_URI=${PROBLEM_ATLAS_DB_URI}
+      - LOG_DB_URI=${PROBLEM_LOG_DB_URI}
       - NODE_ENV=production
     restart: always
 
@@ -21,8 +21,8 @@ services:
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - ATLAS_URI=${ATLAS_URI}
-      - LOG_DB_URI=${LOG_DB_URI}
+      - ATLAS_URI=${SUBMISSION_ATLAS_URI}
+      - LOG_DB_URI=${SUBMISSION_LOG_DB_URI}
       - NODE_ENV=production
     restart: always
 
@@ -48,6 +48,6 @@ services:
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - LOG_DB_URI=${LOG_DB_URI}
+      - LOG_DB_URI=${EVALUATOR_LOG_DB_URI}
       - NODE_ENV=production
     restart: always
